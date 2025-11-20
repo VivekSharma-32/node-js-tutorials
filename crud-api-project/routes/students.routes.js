@@ -32,13 +32,32 @@ const upload = multer({
 // Get all students
 router.get("/", async (req, res) => {
   try {
-    const students = await Student.find();
+    const search = req.query.search || "";
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+    const skip = (page - 1) * limit;
+
+    const query = {
+      $or: [
+        { first_name: { $regex: search, $options: "i" } },
+        { last_name: { $regex: search, $options: "i" } },
+      ],
+    };
+    const total = await Student.countDocuments(query);
+
+    const students = await Student.find(query).skip(skip).limit(limit);
     if (!students) {
       return res.status(404).json({
         message: "Record not found",
       });
     }
-    res.json(students);
+    res.json({
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      students,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

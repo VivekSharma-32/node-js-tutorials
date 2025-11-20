@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
+const path = require("path");
 const studentRoutes = require("./routes/students.routes");
 require("dotenv").config();
 const connectToDB = require("./config/database");
@@ -8,6 +10,10 @@ const { MulterError } = require("multer");
 connectToDB();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(cors());
+
 app.use("/api/students", studentRoutes);
 
 app.use((err, req, res, next) => {
