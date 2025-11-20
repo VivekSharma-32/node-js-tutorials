@@ -1,0 +1,19 @@
+<%- include('header') %>
+    <div class="row mb-5">
+        <div class="col">
+            <form action="/submit" method="POST">
+                Enter Name: <input type="text" name="name" class="form-control mb-3">
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </form>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2 class="bg-success-subtle p-3">
+                <%= message%>
+            </h2>
+        </div>
+    </div>
+
+    <%- include('footer') %>
