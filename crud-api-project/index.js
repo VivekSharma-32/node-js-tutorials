@@ -8,14 +8,21 @@ const auth = require("./middleware/auth");
 require("dotenv").config();
 const connectToDB = require("./config/database");
 const { MulterError } = require("multer");
-
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 connectToDB();
+
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 5, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again after a minute",
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
-
+// app.use(helmet());
+app.use(limiter);
 app.use("/api/users", userRoutes);
 
 app.use(auth);

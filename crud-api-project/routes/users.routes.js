@@ -52,6 +52,15 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json({ data: users });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // logout user
 router.post("/logout", (req, res) => {
   // Invalidate the token on the client side by simply deleting it
